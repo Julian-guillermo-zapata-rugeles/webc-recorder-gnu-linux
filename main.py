@@ -1,4 +1,5 @@
 import os
+import time
 
 """
 Este script es Desarollado por Julián Guillermo Zapata Rugeles
@@ -16,6 +17,9 @@ Puedes crear tus copias y distribuirlas bajo software libre.
 
 
 """
+
+
+VIDEOS_SESSION = 1
 
 
 class Capturador(object):
@@ -42,17 +46,25 @@ class Capturador(object):
         self.obtenerRuta()
         self.crearDirectorio()
 
+
     def obtenerRuta(self):
         tmp_path=os.popen("pwd").read()
         self.PATH  = tmp_path[:-1]
 
     def crearDirectorio(self):
-        os.system("mkdir "+self.OUTPUT)
+        os.system("mkdir "+self.OUTPUT+" > /dev/null 2>&1")
 
     def grabarVideo(self, segundos ):
-        pass
+        tmp_file_name = "/"+time.asctime().replace(" ","-")+".avi"
+        tmp_command = "ffmpeg  -f video4linux2 -i /dev/video0 -f alsa -i hw:0 -acodec mp2 -qscale 0 -t "+str(segundos)+" "+self.PATH+"/"+self.OUTPUT+tmp_file_name
+        print("-----------------------------------------------------")
+        print("              Grabando {} segundos".format(segundos))
+        print("-----------------------------------------------------")
+        os.system(tmp_command)
 
-
-
-f=Capturador()
-print(f.PATH)
+gestor=Capturador()
+while VIDEOS_SESSION > 0:
+    gestor.grabarVideo(55)
+    time.sleep(5)
+    VIDEOS_SESSION-=1
+    print(" --------------- Reiniciando ----------------------")

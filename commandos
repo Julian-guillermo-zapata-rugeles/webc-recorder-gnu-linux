@@ -1,0 +1,1 @@
+ffmpeg  -f video4linux2 -i /dev/video0 -f alsa -i hw:0 -acodec mp2 -qscale 0 -t 20 $HOME/video.avi 
